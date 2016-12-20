@@ -1,42 +1,10 @@
-import React from 'react';
+import HomePageContainer from 'containers/home-page-container';
+import CountPageContainer from 'containers/count-page-container';
 
-class HomePageContainer extends React.Component {
-  render() {
-    return (
-      <section>
-        <h1>Home</h1>
-        <div onClick={() => {
-          this.props.changeLocation('/dashboard');
-        }}>Dashboard</div>
-      </section>
-    );
-  }
-}
-
-class DashboardPageContainer extends React.Component {
-  render() {
-    return (
-      <section>
-        <h1>Dashboard</h1>
-        <div onClick={() => {
-          this.props.changeLocation('/');
-        }}>Home</div>
-      </section>
-    );
-  }
-}
-
-function initializeHomePage() {
-  return new Promise((resolve) => {
-    resolve();
-  });
-}
-
-function initializeDashboradPage() {
-  return new Promise((resolve) => {
-    resolve();
-  });
-}
+import {
+  initializeHomePage,
+  initializeCountPage,
+} from 'action-creators/page-initialize-action-creators';
 
 const routes = [{
   path: '/',
@@ -44,10 +12,10 @@ const routes = [{
   component: HomePageContainer,
   head: {title: 'Home'},
 }, {
-  path: '/dashboard',
-  initialize: initializeDashboradPage,
-  component: DashboardPageContainer,
-  head: {title: 'Dashboard'},
+  path: '/count',
+  initialize: initializeCountPage,
+  component: CountPageContainer,
+  head: {title: 'Count'},
 }];
 
 export default routes;

@@ -115,7 +115,7 @@ export default class MicroRouter {
         return route.initialize(matches.params, data);
       }
     }
-    return new Promise((resolve) => resolve());
+    return new Promise(resolve => resolve());
   }
 
   getHead(path) {

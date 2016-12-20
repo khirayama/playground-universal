@@ -4,7 +4,7 @@ import {
   authHandler,
   authCallbackHandler,
   logoutHandler,
-} from 'handlers';
+} from 'handlers/auth-handlers';
 
 const router = new Router();
 

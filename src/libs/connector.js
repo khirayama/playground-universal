@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 
 export default class Connector extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pathname: props.path
+      pathname: props.path,
     };
 
     this.changeLocation = this._changeLocation.bind(this);
@@ -23,19 +23,19 @@ export default class Connector extends Component {
       document.title = head.title;
     }
   }
-  _changeLocation(pathname, wait = true) {
+  _changeLocation(pathname, data, wait = true) {
     if (history) {
       const head = this.props.router.getHead(pathname);
       this._updateHead(head);
       history.pushState(null, null, pathname);
     }
     if (wait) {
-      this.props.router.initialize(pathname).then(() => {
+      this.props.router.initialize(pathname, data).then(() => {
         this.setState({pathname});
       });
     } else {
-      this.props.router.initialize(pathname);
-        this.setState({pathname});
+      this.props.router.initialize(pathname, data);
+      this.setState({pathname});
     }
   }
   render() {
@@ -43,13 +43,20 @@ export default class Connector extends Component {
     const component = this.props.router.getComponent(pathname);
 
     if (this.props.router.getComponent(pathname)) {
-      const element = React.createElement(component,
-        {
-          changeLocation: this.changeLocation,
-        }
-      );
+      const element = React.createElement(component, {
+        changeLocation: this.changeLocation,
+      });
       return <div>{element}</div>;
     }
     return null;
   }
 }
+
+Connector.propTypes = {
+  router: PropTypes.shape({
+    initialize: PropTypes.func.isRequired,
+    getComponent: PropTypes.func.isRequired,
+    getHead: PropTypes.func.isRequired,
+  }),
+  path: PropTypes.string.isRequired,
+};

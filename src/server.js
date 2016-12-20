@@ -1,5 +1,5 @@
 import path from 'path';
-import express, {Router} from 'express';
+import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import session from 'cookie-session';

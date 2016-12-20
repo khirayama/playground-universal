@@ -3,35 +3,33 @@
 import {EventEmitter} from 'events';
 
 const EVENT_CHANGE = '__CHANGE_STORE';
+const ACTION_DISPATCH = '__ACTION_DISPATCH';
 
-export default class MicroStore extends EventEmitter {
-  constructor() {
+export class MicroStore extends EventEmitter {
+  constructor(state, reducer) {
     super();
 
-    this.state = this._load();
+    this.state = state || {};
+    this._reducer = reducer || (state => {
+      return state;
+    });
+
+    this.subscribe();
   }
-  _save() {
-    const key = '__' + this.constructor.name + 'Cache';
-    if (typeof window === 'object') {
-      if (window.localStorage) {
-        window.localStorage.setItem(key, JSON.stringify(this.state));
-      }
-    }
+  dispatch(action) {
+    this.emit(ACTION_DISPATCH, action);
   }
-  _load() {
-    const key = '__' + this.constructor.name + 'Cache';
-    if (typeof window === 'object') {
-      if (window.localStorage) {
-        const cacheString = window.localStorage.getItem(key);
-        if (cacheString) {
-          return JSON.parse(cacheString);
-        }
+  subscribe() {
+    this.on(ACTION_DISPATCH, action => {
+      this.state = this._reducer(this.state, action);
+      if (typeof window === 'object') {
+        console.log('%cAction:', 'color: #b71c1c; font-weight: bold;', action);
+        console.log('%cState:', 'color: #0d47a1; font-weight: bold;', this.state);
       }
-    }
-    return {};
+      this.dispatchChange();
+    });
   }
   dispatchChange() {
-    this._save();
     this.emit(EVENT_CHANGE);
   }
   addChangeListener(listener) {
@@ -43,4 +41,27 @@ export default class MicroStore extends EventEmitter {
   getState() {
     return Object.assign({}, this.state);
   }
+}
+
+let store = null;
+
+export function createStore(state, reducer) {
+  if (store === null) {
+    store = new MicroStore(state, reducer);
+  }
+}
+
+export function getStore() {
+  return store;
+}
+
+export function getState() {
+  if (store !== null) {
+    return store.getState();
+  }
+  return null;
+}
+
+export function dispatch(action) {
+  return store.dispatch(action);
 }
