@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import Container from 'libs/container';
+import {Container} from '@khirayama/react-circuit';
 
 import CountButton from 'components/count-button';
 
@@ -18,7 +18,7 @@ export default class DashboardPageContainer extends Container {
     this.props.changeLocation('/', {dispatch: this.dispatch});
   }
   render() {
-    const state = this.getState();
+    const state = this.state;
 
     return (
       <section>

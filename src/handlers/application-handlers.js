@@ -2,9 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 
 import i18n from 'libs/micro-i18n';
-import Router from 'libs/micro-router';
-import {createStore, getState, dispatch} from 'libs/micro-store';
-import Connector from 'libs/connector';
+import {Router, Connector} from 'spectrometer';
+import {createStore, getState, dispatch} from '@khirayama/circuit';
 
 import routes from 'config/routes';
 
@@ -15,7 +14,7 @@ import reducer from 'reducers';
 export function applicationHandler(req, res) {
   i18n.setLocale(req.getLocale());
 
-  const router = new Router(routes);
+  const pathname = req.path;
 
   createStore({
     total: 0,
@@ -23,7 +22,10 @@ export function applicationHandler(req, res) {
     ui: getUI(req.useragent),
   }, reducer);
 
-  router.initialize(req.path, {dispatch}).then(() => {
+  const router = new Router(routes);
+
+  const {data} = router.getOptions(pathname);
+  router.initialize(pathname, data).then(() => {
     const state = getState();
     const head = router.getHead(req.path);
     const content = ReactDOM.renderToString(

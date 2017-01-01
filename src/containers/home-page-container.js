@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import Container from 'libs/container';
+import {Container} from '@khirayama/react-circuit';
 
 export default class HomePageContainer extends Container {
   constructor(props) {
